@@ -74,7 +74,7 @@ def rotate(matrix, angle, axis, local=True):
         return rot @ matrix
 
 
-def perspective_mat(self, angle_of_view, aspect_ratio, near_plane, far_plane):
+def perspective_mat(angle_of_view, aspect_ratio, near_plane, far_plane):
     a = radians(angle_of_view)
     d = 1.0 / tan(a / 2)
     r = aspect_ratio

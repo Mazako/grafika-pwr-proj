@@ -13,11 +13,17 @@ def mid(v1, v2):
 
 
 def create(program_id, draw_type, level=0):
-    p1 = [-1, 0, -1]
-    p2 = [1, 0, -1]
-    p3 = [0, 0, -1 + math.sqrt(3)]
-    p4 = [0, (2 * math.sqrt(6) / 3), -1 + (math.sqrt(3) / 3)]
-    coordinates = [p1, p2, p3, p4]
+    pyramid_h = (2 * math.sqrt(6) / 3)
+    triangle_center = math.fabs((math.sqrt(3) / 3) - 1)
+
+    p1 = np.array([-1, 0, triangle_center - 1])
+    p2 = np.array([1, 0, triangle_center - 1])
+    p3 = np.array([0, 0, triangle_center - 1 + math.sqrt(3)])
+    p4 = np.array([0, pyramid_h, 0])
+
+    #Scale coordinates to NDC
+    coordinates = [p * 0.6 for p in [p1, p2, p3, p4]]
+
     print(coordinates)
     print(distance(p1, p2))
     print(distance(p2, p3))
@@ -25,10 +31,10 @@ def create(program_id, draw_type, level=0):
     print(distance(p1, p4))
     print(distance(p2, p4))
     print(distance(p3, p4))
+
     vertices = []
     colors = []
     create_sierpinski(p1, p2, p3, p4, level, vertices, colors)
-    print(colors)
     return SierpinskiPyramid(program_id, draw_type, vertices, colors)
 
 

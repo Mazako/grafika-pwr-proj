@@ -26,7 +26,7 @@ class App:
     def initialise_program(self):
         self.program_id = create_program('../shaders/vertex_shader.glsl', '../shaders/fragment_shader.glsl')
         self.camera = Camera(self.program_id, self.screen_width, self.screen_height)
-        self.pyramid = create(self.program_id, GL_TRIANGLES, 4)
+        self.pyramid = create(self.program_id, GL_TRIANGLES, 5)
         glEnable(GL_DEPTH_TEST)
 
     def update(self):

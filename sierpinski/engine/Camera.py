@@ -1,6 +1,5 @@
 import numpy as np
 import pygame
-from OpenGL.GLU import *
 from math import *
 from .Uniform import *
 import glm
@@ -28,7 +27,6 @@ class Camera:
         self.mouse_sensitivity_y = 0.04
         self.key_sensitivity = 0.08
         self.last_mouse = (0, 0)
-
 
     def rotate(self, yaw, pitch):
         self.yaw += yaw
@@ -73,6 +71,5 @@ class Camera:
             glm.vec3(self.up.x, self.up.y, self.up.z)
         )
         view = np.array(view.to_tuple(), np.float32).transpose()
-        look_at = Uniform(self.program_id,'mat4', view, 'camera_transformation')
+        look_at = Uniform(self.program_id, 'mat4', view, 'camera_transformation')
         look_at.load()
-

@@ -1,5 +1,6 @@
 from OpenGL.GL import *
 
+
 def compile_shader(type, source):
     shader_id = glCreateShader(type)
     glShaderSource(shader_id, source)
@@ -10,8 +11,8 @@ def compile_shader(type, source):
         raise Exception('\n' + glGetShaderInfoLog(shader_id).decode('utf-8'))
     return shader_id
 
-def create_program(vertex_shader_path, fragment_shader_path):
 
+def create_program(vertex_shader_path, fragment_shader_path):
     vertex_shader_id = compile_shader(GL_VERTEX_SHADER, open(vertex_shader_path).read())
     fragment_shader_id = compile_shader(GL_FRAGMENT_SHADER, open(fragment_shader_path).read())
 

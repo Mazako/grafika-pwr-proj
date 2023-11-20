@@ -5,6 +5,8 @@ from math import *
 from .Uniform import *
 import glm
 
+from ..utils.Translations import perspective_mat
+
 
 class Camera:
     def __init__(self, program_id, w, h):
@@ -17,7 +19,7 @@ class Camera:
         self.yaw = -90
         self.pitch = 0
 
-        self.projection_mat = self.perspective_mat(60, w / h, 0.01, 1000000)
+        self.projection_mat = perspective_mat(60, w / h, 0.01, 1000000)
         self.projection = Uniform(program_id, 'mat4', self.projection_mat, 'projection_matrix')
         self.program_id = program_id
         self.screen_width = w
@@ -27,17 +29,6 @@ class Camera:
         self.key_sensitivity = 0.08
         self.last_mouse = (0, 0)
 
-    def perspective_mat(self, angle_of_view, aspect_ratio, near_plane, far_plane):
-        a = radians(angle_of_view)
-        d = 1.0 / tan(a / 2)
-        r = aspect_ratio
-        b = (far_plane + near_plane) / (near_plane - far_plane)
-        c = far_plane * near_plane / (near_plane - far_plane)
-        return np.array([
-            [d / r, 0, 0, 0],
-            [0, d, 0, 0],
-            [0, 0, b, c],
-            [0, 0, -1, 0]], np.float32)
 
     def rotate(self, yaw, pitch):
         self.yaw += yaw

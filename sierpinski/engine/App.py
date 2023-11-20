@@ -4,9 +4,8 @@ import pygame
 from pygame.constants import DOUBLEBUF, OPENGL, K_ESCAPE, KEYDOWN, K_SPACE
 
 from sierpinski.engine.Camera import Camera
-from sierpinski.pyramid.SierpinskiPyramid import SierpinskiPyramid
-from sierpinski.utils.ProgramCompiler import *
 from sierpinski.pyramid.SierpinskiPyramidFactory import create
+from sierpinski.utils.ProgramCompiler import *
 
 
 class App:

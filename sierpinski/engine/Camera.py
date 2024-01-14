@@ -14,12 +14,12 @@ class Camera:
         self.right = pygame.math.Vector3(1, 0, 0)
         self.forward = pygame.math.Vector3(0, 0, -1)
         self.look = self.eye + self.forward
-
+        self.w = w
+        self.h = h
         self.yaw = -90
         self.pitch = 0
 
         self.projection_mat = perspective_mat(60, w / h, 0.01, 1000000)
-        self.projection = Uniform(program_id, 'mat4', self.projection_mat, 'projection_matrix')
         self.program_id = program_id
         self.screen_width = w
         self.screen_height = h
@@ -27,8 +27,15 @@ class Camera:
         self.mouse_sensitivity_y = 0.04
         self.key_sensitivity = 0.08
         self.last_mouse = (0, 0)
+        self.zoom = 60
 
-    def rotate(self, yaw, pitch):
+    def rotate(self, yaw, pitch, scroll):
+        self.zoom -= scroll
+        if self.zoom < 1:
+            self.zoom = 1
+        if self.zoom > 60:
+            self.zoom = 60
+
         self.yaw += yaw
         self.pitch += pitch
 
@@ -44,13 +51,13 @@ class Camera:
         self.right = self.forward.cross(pygame.Vector3(0, 1, 0)).normalize()
         self.up = self.right.cross(self.forward).normalize()
 
-    def update(self):
+    def update(self, scroll):
         if pygame.mouse.get_visible():
             return
         mouse_pos = pygame.mouse.get_pos()
         mouse_change = self.last_mouse - pygame.math.Vector2(mouse_pos)
         pygame.mouse.set_pos(self.screen_width / 2, self.screen_height / 2)
-        self.rotate(-mouse_change.x * self.mouse_sensitivity_x, mouse_change.y * self.mouse_sensitivity_y)
+        self.rotate(-mouse_change.x * self.mouse_sensitivity_x, mouse_change.y * self.mouse_sensitivity_y, scroll)
         self.last_mouse = pygame.mouse.get_pos()
 
         keys = pygame.key.get_pressed()
@@ -63,7 +70,9 @@ class Camera:
         elif keys[pygame.K_d]:
             self.eye += self.right * self.key_sensitivity
 
-        self.projection.load()
+        self.projection_mat = perspective_mat(self.zoom, self.w / self.h, 0.01, 1000000)
+        Uniform(self.program_id, 'mat4', self.projection_mat, 'projection_matrix').load()
+
         self.look = self.eye + self.forward
         view = glm.lookAt(
             glm.vec3(self.eye.x, self.eye.y, self.eye.z),
@@ -72,4 +81,6 @@ class Camera:
         )
         view = np.array(view.to_tuple(), np.float32).transpose()
         look_at = Uniform(self.program_id, 'mat4', view, 'camera_transformation')
+        cam_pos = Uniform(self.program_id, 'vec3', np.array([-self.look.x, -self.look.y, -self.look.z], np.float32), 'viewPosition')
         look_at.load()
+        cam_pos.load()

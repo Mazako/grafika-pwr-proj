@@ -4,6 +4,8 @@ import pygame
 from pygame.constants import DOUBLEBUF, OPENGL, K_ESCAPE, KEYDOWN, K_SPACE
 
 from sierpinski.engine.Camera import Camera
+from sierpinski.engine.Texture import Texture
+from sierpinski.engine.Uniform import Uniform
 from sierpinski.pyramid.SierpinskiPyramidFactory import create
 from sierpinski.utils.ProgramCompiler import *
 
@@ -22,17 +24,26 @@ class App:
         self.pyramid = None
         self.program_id = None
         self.camera = None
+        self.scroll = 0
+        self.show_texture = True
+        self.show_texture_uniform = None
 
     def initialise_program(self):
         self.program_id = create_program('../shaders/vertex_shader.glsl', '../shaders/fragment_shader.glsl')
         self.camera = Camera(self.program_id, self.screen_width, self.screen_height)
-        self.pyramid = create(self.program_id, GL_TRIANGLES, 5)
+        self.pyramid = create(self.program_id, GL_TRIANGLES, 2)
         glEnable(GL_DEPTH_TEST)
 
     def update(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glUseProgram(self.program_id)
-        self.camera.update()
+        self.camera.update(self.scroll)
+        self.scroll = 0
+        if self.show_texture:
+            show = GL_TRUE
+        else:
+            show = GL_FALSE
+        Uniform(self.program_id, 'bool', show, 'showTex').load()
         self.pyramid.draw()
 
     def program_loop(self):
@@ -51,6 +62,10 @@ class App:
                     if event.key == K_SPACE:
                         pygame.event.set_grab(False)
                         pygame.mouse.set_visible(True)
+                    if event.key == pygame.K_m:
+                        self.show_texture = not self.show_texture
+                if event.type == pygame.MOUSEWHEEL:
+                    self.scroll = event.y
 
             self.update()
             pygame.display.flip()

@@ -1,6 +1,5 @@
 from OpenGL.GL import *
 
-from sierpinski.engine.Texture import Texture
 from sierpinski.engine.Uniform import Uniform
 from sierpinski.engine.Variable import Variable
 from sierpinski.utils.Translations import *

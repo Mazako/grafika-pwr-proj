@@ -4,7 +4,6 @@ import pygame
 from pygame.constants import DOUBLEBUF, OPENGL, K_ESCAPE, KEYDOWN, K_SPACE
 
 from sierpinski.engine.Camera import Camera
-from sierpinski.engine.Texture import Texture
 from sierpinski.engine.Uniform import Uniform
 from sierpinski.pyramid.SierpinskiPyramidFactory import create
 from sierpinski.utils.ProgramCompiler import *
@@ -27,11 +26,12 @@ class App:
         self.scroll = 0
         self.show_texture = True
         self.show_texture_uniform = None
+        self.levels = 0
 
     def initialise_program(self):
         self.program_id = create_program('../shaders/vertex_shader.glsl', '../shaders/fragment_shader.glsl')
         self.camera = Camera(self.program_id, self.screen_width, self.screen_height)
-        self.pyramid = create(self.program_id, GL_TRIANGLES, 2)
+        self.pyramid = create(self.program_id, GL_TRIANGLES, self.levels)
         glEnable(GL_DEPTH_TEST)
 
     def update(self):
@@ -47,6 +47,12 @@ class App:
         self.pyramid.draw()
 
     def program_loop(self):
+        print('Grafika Komputerowa, Michał Maziarz (263913)')
+        self.levels = int(input('Wybierz ilość pięter piramidy: '))
+        print('WSAD - sterowanie kamerą')
+        print('Mysz - obracanie kamery')
+        print('Scroll - zoom')
+        print('M - przełączanie tekstur')
         pygame.event.set_grab(True)
         pygame.mouse.set_visible(False)
         self.initialise_program()
